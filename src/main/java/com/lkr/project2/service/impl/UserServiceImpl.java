@@ -1,6 +1,7 @@
 package com.lkr.project2.service.impl;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,5 +57,27 @@ public class UserServiceImpl implements UserService {
             return Result.error(ResultCode.USER_NOT_EXIST);
         }
         return Result.success("查询成功，用户信息：" + user.getUsername());
+    }
+
+    @Override
+    public Result<Object> getUserPage(Integer pageNum, Integer pageSize) {
+        // 计算偏移量
+        int offset = (pageNum - 1) * pageSize;
+        // 查询数据列表
+        List<User> userList = userMapper.selectPage(pageSize, offset);
+        // 查询总记录数
+        Long total = userMapper.selectCount();
+        // 计算总页数
+        int pages = (int) Math.ceil((double) total / pageSize);
+        
+        // 组装分页结果
+        Map<String, Object> result = new HashMap<>();
+        result.put("records", userList);
+        result.put("total", total);
+        result.put("size", pageSize);
+        result.put("current", pageNum);
+        result.put("pages", pages);
+        
+        return Result.success(result);
     }
 }
