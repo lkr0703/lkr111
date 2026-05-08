@@ -1,5 +1,6 @@
 package com.lkr.project2.mapper;
 
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -27,4 +28,8 @@ public interface UserMapper {
     // 查询总记录数
     @Select("SELECT COUNT(*) FROM sys_user")
     Long selectCount();
+    
+    // 删除用户
+    @Delete("DELETE FROM sys_user WHERE id = #{id}")
+    void deleteById(@Param("id") Long id);
 }
