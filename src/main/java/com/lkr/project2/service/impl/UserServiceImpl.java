@@ -20,6 +20,7 @@ import com.lkr.project2.entity.User;
 import com.lkr.project2.entity.UserInfo;
 import com.lkr.project2.mapper.UserInfoMapper;
 import com.lkr.project2.mapper.UserMapper;
+import com.lkr.project2.security.JwtUtil;
 import com.lkr.project2.service.UserService;
 import com.lkr.project2.vo.UserDetailVO;
 
@@ -33,8 +34,10 @@ public class UserServiceImpl implements UserService {
     
     @Autowired
     private StringRedisTemplate redisTemplate;
+    
+    @Autowired
+    private JwtUtil jwtUtil;
 
-    private static final Map<String, String> tokenToUsername = new HashMap<>();
     private static final String CACHE_KEY_PREFIX = "user:detail:";
 
     @Override
@@ -59,11 +62,9 @@ public class UserServiceImpl implements UserService {
         if (!dbUser.getPassword().equals(userDTO.getPassword())) {
             return Result.error(ResultCode.PASSWORD_ERROR);
         }
-        // 生成token
-        String token = "token_" + System.currentTimeMillis() + "_" + userDTO.getUsername();
-        // 存储token与用户名的映射
-        tokenToUsername.put(token, userDTO.getUsername());
-        return Result.success(token);
+        // 使用 JwtUtil 生成 JWT token
+        String jwt = jwtUtil.generateToken(userDTO.getUsername());
+        return Result.success(jwt);
     }
 
     @Override
