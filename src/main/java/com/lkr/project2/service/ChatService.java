@@ -1,6 +1,8 @@
 package com.lkr.project2.service;
 
+import com.lkr.project2.dto.ChatRequestDTO;
+import com.lkr.project2.vo.ChatResponseVO;
+
 public interface ChatService {
-    String chat(String message);
-    String chat(String sessionId, String message);
+    ChatResponseVO chat(ChatRequestDTO requestDTO);
 }
