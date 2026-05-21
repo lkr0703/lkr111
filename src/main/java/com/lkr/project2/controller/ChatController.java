@@ -21,7 +21,14 @@ public class ChatController {
 
     @PostMapping
     public Result<ChatResponseVO> chat(@RequestBody ChatRequestDTO requestDTO) {
-        String answer = chatService.chat(requestDTO.getMessage());
+        String answer;
+        
+        if (requestDTO.getSessionId() != null && !requestDTO.getSessionId().isBlank()) {
+            answer = chatService.chat(requestDTO.getSessionId(), requestDTO.getMessage());
+        } else {
+            answer = chatService.chat(requestDTO.getMessage());
+        }
+        
         ChatResponseVO responseVO = new ChatResponseVO(requestDTO.getMessage(), answer);
         return Result.success(responseVO);
     }
